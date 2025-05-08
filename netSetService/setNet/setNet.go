@@ -15,7 +15,7 @@ import (
 
 func SetNet() {
 	dir, _ := os.Getwd()
-	logFile, err := os.OpenFile(dir+"/xiaoyulog.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile(dir+"/xiaoyulog.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		notify.NotifyError(err, "打开日志文件失败")
 	}
