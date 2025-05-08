@@ -1,0 +1,23 @@
+package main
+
+import (
+	"fmt"
+	"test/coreEngine"
+)
+
+func main() {
+	e := coreEngine.NewEngine()
+
+	// 加载文件监控模块
+	err := e.LoadModule("file_monitor")
+	if err != nil {
+		fmt.Println("❌ 加载失败:", err)
+		return
+	}
+
+	// 列出已加载模块
+	e.ListModules()
+
+	// 卸载模块
+	e.UnloadModule("file_monitor")
+}

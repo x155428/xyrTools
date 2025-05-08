@@ -1,0 +1,109 @@
+package main
+
+/*
+  系统启动程序
+  1. 加载配置文件，加载集成模块和插件模块
+  2. 启动集成模块和插件模块
+*/
+import (
+	"fmt"
+	"gopkg.in/yaml.v2"
+	"log"
+	"os"
+	"os/exec"
+)
+
+// 配置文件结构
+type Config struct {
+	Modules map[string]bool `yaml:"modules"`
+	Plugins []PluginConfig  `yaml:"plugins"`
+}
+
+// 插件配置结构
+type PluginConfig struct {
+	Name   string   `yaml:"name"`
+	Path   string   `yaml:"path"`
+	Params []string `yaml:"params"`
+}
+
+// 加载配置文件
+func loadConfig(filename string) (Config, error) {
+	var config Config
+	file, err := os.ReadFile(filename)
+	if err != nil {
+		return config, err
+	}
+
+	err = yaml.Unmarshal(file, &config)
+	if err != nil {
+		return config, err
+	}
+
+	return config, nil
+}
+
+// 启动集成模块
+func startIntegratedModules(config Config) {
+	if config.Modules["network_card"] {
+		fmt.Println("Starting Network Card Module...")
+		NetworkCardModule()
+	}
+
+	if config.Modules["system_monitor"] {
+		fmt.Println("Starting System Monitor Module...")
+		SystemMonitorModule()
+	}
+
+	if config.Modules["file_monitor"] {
+		fmt.Println("Starting File Monitor Module...")
+		FileMonitorModule()
+	}
+}
+
+// 启动插件模块
+func startPlugins(config Config) {
+	for _, plugin := range config.Plugins {
+		fmt.Printf("Starting plugin: %s\n", plugin.Name)
+		cmd := exec.Command(plugin.Path, plugin.Params...)
+
+		// 启动插件并继续执行
+		err := cmd.Start()
+		if err != nil {
+			fmt.Printf("Error starting plugin %s: %v\n", plugin.Name, err)
+			continue
+		}
+
+		fmt.Printf("Plugin %s started successfully.\n", plugin.Name)
+	}
+}
+
+// 模块
+func NetworkCardModule() {
+	// 网卡监控模块
+	fmt.Println("Network Card Module Running...")
+}
+
+func SystemMonitorModule() {
+	// 系统监控模块
+	fmt.Println("System Monitor Module Running...")
+}
+
+func FileMonitorModule() {
+	// 文件监控模块
+	fmt.Println("File Monitor Module Running...")
+}
+
+func main() {
+	// 加载配置
+	config, err := loadConfig("conf/config.yaml")
+	if err != nil {
+		log.Fatalf("Error loading config: %v", err)
+	}
+
+	// 启动集成模块
+	startIntegratedModules(config)
+
+	// 启动插件模块
+	startPlugins(config)
+	fmt.Println("程序启动。。。")
+}

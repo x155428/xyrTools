@@ -1,0 +1,68 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+	"time"
+
+	_ "embed"
+	"os/exec"
+
+	"github.com/getlantern/systray"
+)
+
+//go:embed icon/cat.png
+var iconData []byte
+
+func main() {
+	systray.Run(onReady, onExit)
+}
+
+func onReady() {
+	systray.SetIcon(iconData)
+	systray.SetTitle("网管")
+	systray.SetTooltip("test")
+
+	mOpen := systray.AddMenuItem("打开面板", "查看状态")
+	mQuit := systray.AddMenuItem("退出", "关闭程序")
+
+	go func() {
+		startHTTPServer()
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-mOpen.ClickedCh:
+				openBrowser("http://127.0.0.1:8080")
+			case <-mQuit.ClickedCh:
+				systray.Quit()
+				return
+			}
+		}
+	}()
+}
+
+func onExit() {
+	fmt.Println("退出托盘程序")
+	os.Exit(0)
+}
+
+func startHTTPServer() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		now := time.Now().Format("2006-01-02 15:04:05")
+		fmt.Fprintf(w, "<html><body><h1>系统守护者</h1><p>当前时间：%s</p></body></html>", now)
+	})
+	http.ListenAndServe(":8080", nil)
+}
+
+func openBrowser(url string) {
+	// Windows 系统打开默认浏览器
+	_ = execCommand("rundll32", "url.dll,FileProtocolHandler", url)
+}
+
+func execCommand(name string, arg ...string) error {
+	cmd := exec.Command(name, arg...)
+	return cmd.Start()
+}

@@ -1,0 +1,117 @@
+package main
+
+import (
+	"log"
+	"runtime"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+)
+
+// 网卡配置数据结构
+type NetworkInterface struct {
+	Name      string
+	IPAddress string
+	Status    string
+	Configs   []string // 配置项
+}
+
+func main() {
+	netManageGuiUseFyne()
+}
+
+func netManageGuiUseFyne() {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+	// 创建应用实例
+	myApp := app.New()
+	// 创建主窗口
+	mainWindow := myApp.NewWindow("网卡管理工具")
+	mainWindow.Resize(fyne.NewSize(800, 600))
+
+	// 定义网卡数据
+	interfaces := []NetworkInterface{
+		{Name: "eth0", IPAddress: "192.168.1.2", Status: "已连接", Configs: []string{"DHCP: Enabled", "MTU: 1500"}},
+		{Name: "wlan0", IPAddress: "192.168.1.3", Status: "未连接", Configs: []string{"DHCP: Disabled", "MTU: 1400"}},
+	}
+
+	// 当前选中的网卡
+	var selectedInterface *NetworkInterface
+
+	// 右侧下部分区：动态展示配置项
+	configContainer := container.NewVBox()
+
+	// 更新右侧下部分区配置项的函数
+	updateConfigDetails := func() {
+		if selectedInterface != nil {
+			configContainer.Objects = nil // 清空现有内容
+			for _, config := range selectedInterface.Configs {
+				configContainer.Add(widget.NewLabel(config))
+			}
+			configContainer.Refresh()
+		} else {
+			configContainer.Objects = []fyne.CanvasObject{widget.NewLabel("请选择一个网卡")}
+			configContainer.Refresh()
+		}
+	}
+
+	// 左侧树形结构：网卡配置文件列表
+	tree := widget.NewTree(
+		func(uid string) []string { // 定义树的子节点
+			return []string{"配置文件1", "配置文件2"}
+		},
+		func(uid string) bool { // 判断是否有子节点
+			return false
+		},
+		func(branch bool) fyne.CanvasObject { // 定义树的节点UI
+			return widget.NewLabel("配置文件")
+		},
+		func(uid string, branch bool, obj fyne.CanvasObject) { // 绑定节点数据到UI
+			obj.(*widget.Label).SetText(uid)
+		},
+	)
+	tree.OnSelected = func(uid string) {
+		log.Println("选中配置文件:", uid)
+		// 这里可以根据选中的配置文件更新右侧内容
+	}
+
+	// 右侧上部：下拉列表选择网卡
+	netSelect := widget.NewSelect([]string{}, func(value string) {
+		// 根据选择的网卡更新详细信息
+		for _, iface := range interfaces {
+			if iface.Name == value {
+				selectedInterface = &iface
+				updateConfigDetails()
+				break
+			}
+		}
+	})
+	netSelect.PlaceHolder = "请选择网卡"
+	netSelect.Options = []string{}
+	for _, iface := range interfaces {
+		netSelect.Options = append(netSelect.Options, iface.Name)
+	}
+
+	// 右侧布局：下拉列表 + 配置项分区
+	rightPanel := container.NewVBox(
+		container.NewHBox(widget.NewLabel("选择网卡:"), netSelect),
+		widget.NewSeparator(),
+		widget.NewLabelWithStyle("配置项", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		configContainer,
+	)
+
+	// 主布局：左侧树形结构 + 右侧面板
+	mainWindow.SetContent(container.NewHSplit(
+		container.NewBorder(nil, nil, nil, nil, tree),
+		rightPanel,
+	))
+
+	// 设置主题
+	myApp.Settings().SetTheme(theme.DarkTheme())
+
+	// 显示窗口并运行应用
+	mainWindow.ShowAndRun()
+}
