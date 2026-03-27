@@ -1,0 +1,73 @@
+# 服务器配置
+[server]
+host = "xiaoyudemo.com" # 服务器主机地址
+port = 8444             # 服务器端口
+read_timeout = 30       # 读取超时（秒）
+write_timeout = 30      # 写入超时（秒）
+
+# cors配置，允许的域名、方法
+[cors]
+allowed_origins = [
+    "https://xiaoyudemo.com:18890",
+    "https://localhost:8889",
+    "https://10.134.179.37:8889",
+    "https://xiaoyudemo.com:8889",
+]
+# 允许的方法
+allowed_methods = ["GET", "POST"]
+# 允许的头部
+allowed_headers = [
+    "Authorization",
+    "Content-Type",
+    "X-Requested-With",
+    "X-Forwarded-For",
+]
+
+
+# 数据库配置
+[database]
+type = "sqlite" # 数据库类型（sqlite[目前], mysql[未兼容] ）
+
+# SQLite 配置
+[database.sqlite]
+sqliteDbPath = "./passwdManage.db" # 数据库存储路径
+
+
+# MySQL 配置(暂未兼容)
+[database.mysql]
+#host = "localhost"            # MySQL 主机地址
+#port = 3306                    # MySQL 端口
+#user = "your_username"        # MySQL 用户名
+#password = "your_password"    # MySQL 密码
+#dbname = "your_dbname"        # MySQL 数据库名
+
+# 日志配置(暂未实现）
+[logging]
+#level = "info"                # 日志级别（info, debug, warn, error）
+#log_file = "server.log"          # 日志文件路径
+
+# 安全配置（浏览器读取文件未解决，目前未实现）
+[security]
+#encryption_method = "AES-256"  # 加密方法
+#key_file_path = "./keys/mykey.pem"  # 密钥文件路径
+
+# 证书配置
+[ssl]
+certificate_file = "./crt/server.crt" # 服务器证书文件路径
+private_key_file = "./crt/server.key" # 服务器私钥文件路径
+#ca_certificate_file = "./certs/ca.crt"    # CA 证书文件路径（可选）
+#certificate_password = ""                   # 证书密码（如果需要）
+#enable_ssl = true                           # 是否启用 SSL/TLS
+
+[session]
+domain = ".xiaoyudemo.com"         # 会话域名
+path = "/"                         # 会话路径
+max_age = 1200                     # 会话有效期（秒）
+secure = true                      # 是否仅通过 HTTPS 传输，已强制为https传输
+http_only = true                   # cookie 安全
+same_site = "None"                 # SameSite 策略（None, Lax, Strict）
+cleanup_expired_sessions_time = 10 # 定期清理过期会话的时间间隔（秒）
+
+# 用户加密密钥，在此配置则全程可用，易泄露，建议登陆后配置
+[userKey]
+aesKeyBase64 = ""

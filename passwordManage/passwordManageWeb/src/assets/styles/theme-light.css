@@ -1,0 +1,20 @@
+:root[data-theme="light"] {
+     --bg-primary: #f1f5f9;
+     --bg-secondary: #ffffff;
+     --bg-tertiary: #e2e8f0;
+
+     --text-primary: #1f2937;
+     --text-secondary: #4b5563;
+     --text-muted: #9ca3af;
+
+     --border-light: #e5e7eb;
+     --border-strong: #d1d5db;
+
+     --primary: #2563eb;
+     --primary-hover: #1d4ed8;
+     --primary-active: #1e40af;
+
+     --success: #16a34a;
+     --warning: #d97706;
+     --danger: #dc2626;
+}

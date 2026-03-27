@@ -1,0 +1,38 @@
+# 忽略可执行文件
+*.exe
+
+# 忽略调试文件
+*.pdb
+*.dll
+
+# 忽略数据库文件
+*.db
+
+# 忽略日志文件
+*.log
+*.txt
+
+# 忽略前端项目依赖
+node_modules/
+
+# 忽略前端构建产物
+dist/
+
+# 忽略环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 忽略IDE相关文件
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 忽略包管理器文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

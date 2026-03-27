@@ -1,0 +1,59 @@
+#发布订阅制，各个模块通过发布消息、订阅消息来交互信息
+#TODO: 
+#文件监控模块，大量异常后缀变动告警（勒索病毒）、文件夹内容变动提醒（共享文件夹变动提示）
+#性能监控模块，cpu、内存突然暴涨告警（挖矿）、达到阈值自动执行内存优化
+#处置模块，根据告警和预定义动作，对告警进行处置，可能尝试集成少量高危特征库
+
+# 模块列表，根据开发进度添加模块名和模块自定义配置
+# memopt，内存优化模块
+# sysTray，托盘模块
+# fileMonitor，文件管理模块（待实现）
+
+# log配置
+log:
+  level: error # 日志级别，debug、info、warn、error、fatal
+  logFilePath: ./log/log.txt # 日志文件路径
+  hijackStdout: true # 是否劫持标准输出,当编译成无gui形式时，原本输出到控制台的信息无法显示，true则劫持写进日志文件
+  overwrite: true # 是否覆盖日志文件
+
+# 心跳检测  用于插件exe独立启动时，如果主控异常关闭，插件自毁
+heartbeat:
+  enabled: true
+  heartbeatAddress: 127.0.0.1:6000
+
+# 模块列表
+modules:
+  memopt
+  sysTray 
+  fileMonitor
+  passwordManage
+
+# 对应模块配置，是否开启、运行时间等配置，可扩展配置结构
+# 内存优化模块
+memopt:
+  enabled: false
+  interval: 60 # 运行间隔，单位秒
+  isHeartbeat: true # 是否开启心跳检测
+
+# 系统托盘模块
+sysTray:
+  enabled: true
+  isHeartbeat: true # 是否开启心跳检测
+
+# 文件监控模块（待实现）
+fileMonitor:
+  enabled: false
+  isHeartbeat: true # 是否开启心跳检测
+  interval: 20 # 运行间隔，单位秒
+  file_path: C:// # 监控的文件路径
+
+# 密码管理模块
+passwordManage:
+  enabled: true
+  isHeartbeat: true # 是否开启心跳检测
+  serverPath: ./exeMod/passwordManage/server/passwordManageServer.exe # 密码管理模块的服务器路径
+  clientPath: ./exeMod/passwordManage/web/dist # 密码管理模块的客户端路径
+  domain: xiaoyudemo.com # 域名
+  clientPort: 8080 # 端口
+  certPath: C:/Users/小鱼/Desktop/ssl证书链/ca.crt # 证书路径
+  keyPath: C:/Users/小鱼/Desktop/ssl证书链/ca.key # 密钥路径  

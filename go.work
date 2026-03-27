@@ -1,0 +1,10 @@
+go 1.25
+
+use (
+	./netManageGui  // 网络管理 GUI模块
+     ./netSetService  // 网络设置服务模块
+     ./passwordManage/passwordManageServer  // 密码管理服务端模块
+     ./xyrTools  // 外壳主程序
+     ./myMod  // 一个系统通知包，半成品
+	)
+	

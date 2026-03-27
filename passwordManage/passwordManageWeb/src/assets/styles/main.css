@@ -1,0 +1,104 @@
+@import '@/assets/styles/base.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-size: var(--font-size-base);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 焦点可访问性 */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+
+/* 文本 */
+.text-main {
+  color: var(--text-main);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* 间距 */
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+
+.mt-md {
+  margin-top: var(--space-md);
+}
+
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+
+/* 圆角 */
+.round-sm {
+  border-radius: var(--radius-sm);
+}
+
+.round-md {
+  border-radius: var(--radius-md);
+}
+
+.round-lg {
+  border-radius: var(--radius-lg);
+}
+
+/* 阴影 */
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+/* 覆盖层 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}

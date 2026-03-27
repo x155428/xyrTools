@@ -1,0 +1,116 @@
+:root {
+     /* ===== 背景 ===== */
+     --bg-page: #f6f7f9;
+     --bg-container: #ffffff;
+     --bg-muted: #eef1f5;
+     --bg-hover: #f9fafb;
+
+     /* ===== 文本 ===== */
+     --text-main: #1f2937;
+     --text-secondary: #4b5563;
+     --text-muted: #9ca3af;
+     --text-inverse: #ffffff;
+
+     /* ===== 主色 ===== */
+     --color-primary: #60a5fa;
+     --color-primary-hover: #3b82f6;
+     --color-primary-light: #dbeafe;
+     --color-primary-active: #2563eb;
+
+     /* ===== 状态色 ===== */
+     --color-success: #4ade80;
+     --color-success-hover: #22c55e;
+     --color-success-active: #16a34a;
+     --color-warning: #fbbf24;
+     --color-warning-hover: #f59e0b;
+     --color-warning-active: #d97706;
+     --color-danger: #f87171;
+     --color-danger-hover: #ef4444;
+     --color-danger-active: #dc2626;
+     --color-info: #64748b;
+
+     /* ===== 边框 ===== */
+     --border-color: #e5e7eb;
+     --border-color-light: #f0f2f5;
+
+     /* ===== 间距 ===== */
+     --space-xs: 4px;
+     --space-sm: 8px;
+     --space-md: 16px;
+     --space-lg: 24px;
+     --space-xl: 32px;
+
+     /* ===== 圆角 ===== */
+     --radius-sm: 4px;
+     --radius-md: 6px;
+     --radius-lg: 10px;
+
+     /* ===== 阴影 ===== */
+     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+     --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+     /* ===== 字体 ===== */
+     --font-size-sm: 12px;
+     --font-size-base: 14px;
+     --font-size-lg: 16px;
+
+     --font-weight-normal: 400;
+     --font-weight-medium: 500;
+     --font-weight-bold: 600;
+
+     /* ===== 动画 ===== */
+     --transition-base: 0.25s ease;
+}
+
+
+/* 适配 Element Plus 组件库的颜色变量 */
+:root {
+     --el-color-primary: var(--color-primary);
+     --el-color-primary-light-3: var(--color-primary-light);
+     --el-color-primary-dark-2: var(--color-primary-hover);
+
+     --el-color-success: var(--color-success);
+     --el-color-warning: var(--color-warning);
+     --el-color-danger: var(--color-danger);
+     --el-color-info: var(--color-info);
+
+     --el-text-color-primary: var(--text-main);
+     --el-text-color-regular: var(--text-secondary);
+     --el-text-color-secondary: var(--text-muted);
+     --el-text-color-placeholder: var(--text-muted);
+
+     --el-bg-color: var(--bg-container);
+     --el-bg-color-page: var(--bg-page);
+
+     --el-border-color: var(--border-color);
+     --el-border-radius-base: var(--radius-md);
+
+     --el-box-shadow: var(--shadow-sm);
+     --el-box-shadow-light: var(--shadow-sm);
+     --el-box-shadow-dark: var(--shadow-md);
+}
+
+/* 通用动画效果 */
+.fade-enter-active,
+.fade-leave-active {
+     transition: opacity var(--transition-base);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+     opacity: 0;
+}
+
+/* 平滑滚动 */
+html {
+     scroll-behavior: smooth;
+}
+
+/* 焦点样式优化 */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+     outline: 2px solid var(--color-primary);
+     outline-offset: 2px;
+}

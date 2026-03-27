@@ -1,0 +1,53 @@
+configs:
+    - name: 无线静态
+      desc: 192.168.1.10
+      adapter: WLAN
+      dhcp: false
+      dnsdhcp: false
+      ip: 192.168.1.10
+      netmask: 255.255.255.0
+      gateway: 192.168.0.1
+      dns:
+        - 8.8.8.8
+      mtu: 1500
+      metric: 10
+      flushDNS: true
+    - name: 无线dhcp
+      desc: 动态网络配置，DHCP 获取 IP 和 DNS
+      adapter: WLAN
+      dhcp: true
+      dnsdhcp: true
+      ip: ""
+      netmask: ""
+      gateway: ""
+      dns: []
+      mtu: 1500
+      metric: 10
+      flushDNS: false
+    - name: 有线dhcp
+      desc: 有线配置dhcp
+      adapter: 以太网
+      dhcp: true
+      dnsdhcp: true
+      ip: ""
+      netmask: ""
+      gateway: ""
+      dns: []
+      mtu: 1500
+      metric: 128
+      flushDNS: false
+    - name: 有线静态
+      desc: 有线静态
+      adapter: 以太网
+      dhcp: false
+      dnsdhcp: false
+      ip: 192.168.0.10
+      netmask: 255.255.255.0
+      gateway: 192.168.0.1
+      dns:
+        - 8.8.8.8
+        - 114.114.114.114
+        - 223.5.5.5
+      mtu: 1500
+      metric: 10
+      flushDNS: false

@@ -1,0 +1,113 @@
+package sysTray
+
+import (
+	"image/color"
+	"os"
+	"os/exec"
+	"strings"
+
+	//"os/exec"
+	"runtime"
+
+	"gioui.org/app"
+	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/unit"
+	"gioui.org/widget"
+	"gioui.org/widget/material"
+)
+
+func showNetManageGui() {
+
+	//go netManageGuiUseGio()
+
+	//另一种方式，占用资源太多,后期应当优化
+	// 另起进程运行netManageGui.exe
+	dir, getPwdErr := os.Getwd()
+	if getPwdErr != nil {
+		println(getPwdErr.Error())
+	}
+	path := strings.Join([]string{dir, "exeMod", "netManageGui.exe"}, "/")
+	cmd := exec.Command(path)
+	err := cmd.Start()
+	if err != nil {
+		println(err.Error())
+	}
+}
+
+// 原gio实现界面测试
+func netManageGuiUseGio() {
+	runtime.LockOSThread()
+	// 1. 创建窗口
+	window := new(app.Window)
+	window.Option(app.Title("网卡管理"))
+	window.Option(app.Size(unit.Dp(800), unit.Dp(600)))
+
+	// 2. 初始化数据
+	interfaces := []NetworkInterface{
+		{Name: "eth0", IPAddress: "192.168.1.2", Status: "已连接"},
+		{Name: "wlan0", IPAddress: "192.168.1.3", Status: "未连接"},
+	}
+	var selectedInterface *NetworkInterface
+	var list widget.List
+	list.Axis = layout.Vertical
+	buttons := make([]widget.Clickable, len(interfaces)) // 按钮状态数组
+
+	// 3. 加载主题
+	theme := material.NewTheme()
+
+	// 4. 主事件循环
+	var ops op.Ops
+	for {
+		switch e := window.Event().(type) {
+		case app.DestroyEvent:
+			runtime.UnlockOSThread()
+			return
+			// 结束该窗口
+			//os.Exit(0)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+
+			// 5. 布局：左右分栏
+			layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+				// 左侧网卡列表 (占30%宽度)
+				layout.Flexed(0.3, func(gtx layout.Context) layout.Dimensions {
+					return material.List(theme, &list).Layout(gtx, len(interfaces),
+						func(gtx layout.Context, index int) layout.Dimensions {
+							item := interfaces[index]
+							if buttons[index].Clicked(gtx) {
+								selectedInterface = &interfaces[index]
+							}
+							return material.Button(theme, &buttons[index], item.Name).Layout(gtx)
+						})
+				}),
+				// 右侧配置面板 (占70%宽度)
+				layout.Flexed(0.7, func(gtx layout.Context) layout.Dimensions {
+					if selectedInterface == nil {
+						return layout.Dimensions{}
+					}
+					return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return layout.Flex{
+							Axis: layout.Vertical,
+						}.Layout(gtx,
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								title := material.H6(theme, "网卡配置: "+selectedInterface.Name)
+								return title.Layout(gtx)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								ipLabel := material.Body1(theme, "IP地址: "+selectedInterface.IPAddress)
+								return ipLabel.Layout(gtx)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								statusLabel := material.Body1(theme, "状态: "+selectedInterface.Status)
+								statusLabel.Color = color.NRGBA{R: 0xFF, A: 0xFF}
+								return statusLabel.Layout(gtx)
+							}),
+						)
+					})
+				}),
+			)
+			e.Frame(gtx.Ops)
+		}
+	}
+}

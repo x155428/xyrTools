@@ -1,0 +1,70 @@
+package modules
+
+import (
+	"xyrTools/test/modInterfaces"
+	"strings"
+	"time"
+
+	"github.com/fsnotify/fsnotify"
+)
+
+type FileMonitor struct {
+	watcher  *fsnotify.Watcher
+	config   FileConfig
+	reporter modInterfaces.Reporter // 依赖注入
+}
+
+type FileConfig struct {
+	WatchPaths   []string `json:"watch_paths"`
+	BlacklistExt []string `json:"blacklist_ext"` // 轻量特征辅助
+}
+
+func (m *FileMonitor) Start() error {
+	watcher, _ := fsnotify.NewWatcher()
+	m.watcher = watcher
+
+	for _, path := range m.config.WatchPaths {
+		watcher.Add(path)
+	}
+
+	go m.watchEvents()
+	return nil
+}
+
+func (m *FileMonitor) watchEvents() {
+	for {
+		select {
+		case event := <-m.watcher.Events:
+			if m.isSuspicious(event) {
+				m.reporter.ReportEvent(&modInterfaces.SecurityEvent{
+					Module:    m.Name(),
+					Level:     "critical",
+					Timestamp: time.Now(),
+					Data:      map[string]string{"file": event.Name, "op": event.Op.String()},
+				})
+			}
+		}
+	}
+}
+
+// 判断是否可疑（行为分析+轻量特征）
+func (m *FileMonitor) isSuspicious(event fsnotify.Event) bool {
+	// 行为分析：高频写入
+	if event.Op&fsnotify.Write == fsnotify.Write {
+		// 轻量特征：扩展名黑名单
+		for _, ext := range m.config.BlacklistExt {
+			if strings.HasSuffix(event.Name, ext) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (m *FileMonitor) Name() string        { return "file_monitor" }
+func (m *FileMonitor) Stop() error         { return m.watcher.Close() }
+func (m *FileMonitor) Config() interface{} { return m.config }
+func (m *FileMonitor) SetConfig(config interface{}) error {
+	m.config = config.(FileConfig)
+	return nil
+}
